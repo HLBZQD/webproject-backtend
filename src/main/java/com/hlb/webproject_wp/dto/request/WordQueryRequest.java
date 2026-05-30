@@ -28,11 +28,11 @@ public class WordQueryRequest {
     @Size(max = 100, message = "Word category too long")
     private String wordCategory;
 
-    /** Sort field: word, translation, difficultyLevel, sound, wordCategory, createdAt, updatedAt */
+    /** 排序字段: word, translation, difficultyLevel, sound, wordCategory, createdAt, updatedAt */
     @Size(max = 30, message = "Sort field too long")
     private String sortField;
 
-    /** Sort direction: asc or desc */
+    /** 排序方向: asc 或 desc */
     @Pattern(regexp = "^(asc|desc)$", message = "Sort order must be 'asc' or 'desc'")
     private String sortOrder;
 

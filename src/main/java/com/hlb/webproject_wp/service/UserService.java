@@ -20,7 +20,7 @@ public interface UserService {
 
     User findByUsername(String username);
 
-    // ── Admin user management ──
+    // ── 管理员用户管理 ──
     PageResult<List<AdminUserVO>> listUsers(int page, int size, String keyword, String role, Boolean showDeleted, String sortField, String sortOrder);
     AdminUserVO createUser(CreateUserDTO dto);
     AdminUserVO updateUser(Long id, UpdateUserDTO dto);

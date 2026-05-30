@@ -60,14 +60,14 @@ public class WordServiceImpl implements WordService {
 
         applySort(wrapper, request.getSortField(), request.getSortOrder());
 
-        // Manual pagination — PaginationInnerInterceptor is not available in
-        // MyBatis-Plus 3.5.16 + Spring Boot 4 starter, so we handle it here.
+        // 手动分页 — PaginationInnerInterceptor 在
+        // MyBatis-Plus 3.5.16 + Spring Boot 4 启动器中不可用，故在此处理.
         long total = wordMapper.selectCount(wrapper);
         int pageNum = request.getPage();
         int pageSize = request.getSize();
         long offset = (long) (pageNum - 1) * pageSize;
 
-        // Clone wrapper for the data query with LIMIT appended
+        // 克隆 wrapper，追加 LIMIT 用于数据查询
         wrapper.last("LIMIT " + offset + ", " + pageSize);
         List<Word> records = wordMapper.selectList(wrapper);
 

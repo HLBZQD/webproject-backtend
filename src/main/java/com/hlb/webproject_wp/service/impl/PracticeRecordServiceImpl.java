@@ -36,13 +36,13 @@ public class PracticeRecordServiceImpl implements PracticeRecordService {
 
     @Override
     public PracticeRecordVO submit(PracticeRecordRequest request, Long userId) {
-        // Validate word exists
+        // 验证单词存在
         Word word = wordMapper.selectById(request.getWordId());
         if (word == null) {
             throw new BusinessException(404, "Word not found");
         }
 
-        // Validate user exists
+        // 验证用户存在
         User user = userMapper.selectById(userId);
         if (user == null) {
             throw new BusinessException(404, "User not found");

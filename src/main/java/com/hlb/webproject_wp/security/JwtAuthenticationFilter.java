@@ -40,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String requestPath = request.getRequestURI();
 
-        // Skip authentication for excluded paths
+        // 跳过免认证路径
         for (String pattern : EXCLUDED_PATHS) {
             if (pathMatcher.match(pattern, requestPath)) {
                 filterChain.doFilter(request, response);
@@ -48,7 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
-        // Extract token from Authorization header
+        // 从 Authorization 请求头提取 token
         String token = extractToken(request);
 
         if (token != null && jwtUtil.validateToken(token)) {

@@ -37,7 +37,7 @@ public class PracticeRecordController {
             @RequestParam(required = false) Long userId,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size) {
-        // If no userId param, use current authenticated user
+        // 若无 userId 参数，使用当前登录用户
         if (userId == null) {
             userId = SecurityContextUtil.getCurrentUserIdOrThrow();
         }

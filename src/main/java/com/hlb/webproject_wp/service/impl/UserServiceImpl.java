@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
         return vo;
     }
 
-    // ── Admin user management ──
+    // ── 管理员用户管理 ──
 
     @Override
     public PageResult<List<AdminUserVO>> listUsers(int page, int size, String keyword, String role, Boolean showDeleted, String sortField, String sortOrder) {
