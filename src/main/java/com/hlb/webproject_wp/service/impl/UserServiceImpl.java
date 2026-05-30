@@ -88,10 +88,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public PageResult<List<AdminUserVO>> listUsers(int page, int size) {
         long offset = (long) (page - 1) * size;
-        long total = userMapper.selectCount(new LambdaQueryWrapper<>());
 
-        List<User> users = userMapper.selectList(
-            new LambdaQueryWrapper<User>().last("LIMIT " + offset + ", " + size));
+        List<User> all = userMapper.selectAllUsers();
+        long total = all.size();
+
+        int from = (int) Math.min(offset, all.size());
+        int to = (int) Math.min(offset + size, all.size());
+        List<User> users = all.subList(from, to);
 
         List<AdminUserVO> voList = users.stream()
                 .map(this::toAdminUserVO)
@@ -140,6 +143,15 @@ public class UserServiceImpl implements UserService {
         }
         userMapper.deleteById(id);
         log.info("Admin deleted user: id={}", id);
+    }
+
+    @Override
+    public void restoreUser(Long id) {
+        int rows = userMapper.restoreById(id);
+        if (rows == 0) {
+            throw new BusinessException(404, "User not found");
+        }
+        log.info("Admin restored user: id={}", id);
     }
 
     private AdminUserVO toAdminUserVO(User user) {

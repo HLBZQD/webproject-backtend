@@ -11,5 +11,6 @@ public class AdminUserVO {
     private String nickname;
     private String avatarUrl;
     private String role;
+    private Integer deleted;
     private LocalDateTime createdAt;
 }

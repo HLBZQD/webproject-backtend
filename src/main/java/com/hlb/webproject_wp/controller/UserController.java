@@ -52,4 +52,10 @@ public class UserController {
         userService.deleteUser(id);
         return Result.success();
     }
+
+    @PutMapping("/{id}/restore")
+    public Result<Void> restoreUser(@PathVariable Long id) {
+        userService.restoreUser(id);
+        return Result.success();
+    }
 }
