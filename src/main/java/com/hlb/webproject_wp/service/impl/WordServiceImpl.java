@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hlb.webproject_wp.common.BusinessException;
 import com.hlb.webproject_wp.common.PageResult;
+import com.hlb.webproject_wp.dto.request.WordQueryRequest;
 import com.hlb.webproject_wp.dto.request.WordSaveRequest;
 import com.hlb.webproject_wp.dto.response.WordVO;
 import com.hlb.webproject_wp.entity.Word;
@@ -26,10 +27,28 @@ public class WordServiceImpl implements WordService {
     private final WordMapper wordMapper;
 
     @Override
-    public PageResult<List<WordVO>> page(int pageNum, int pageSize) {
-        Page<Word> page = new Page<>(pageNum, pageSize);
+    public PageResult<List<WordVO>> query(WordQueryRequest request) {
+        Page<Word> page = new Page<>(request.getPage(), request.getSize());
         LambdaQueryWrapper<Word> wrapper = new LambdaQueryWrapper<>();
-        wrapper.orderByAsc(Word::getWord);
+
+        if (StringUtils.hasText(request.getKeyword())) {
+            wrapper.and(w ->
+                w.like(Word::getWord, request.getKeyword())
+                 .or()
+                 .like(Word::getTranslation, request.getKeyword()));
+        }
+
+        if (request.getDifficultyLevel() != null) {
+            wrapper.eq(Word::getDifficultyLevel, request.getDifficultyLevel());
+        }
+        if (StringUtils.hasText(request.getPartOfSpeech())) {
+            wrapper.eq(Word::getPartOfSpeech, request.getPartOfSpeech());
+        }
+        if (StringUtils.hasText(request.getWordCategory())) {
+            wrapper.eq(Word::getWordCategory, request.getWordCategory());
+        }
+
+        applySort(wrapper, request.getSortField(), request.getSortOrder());
 
         Page<Word> result = wordMapper.selectPage(page, wrapper);
 
@@ -38,6 +57,41 @@ public class WordServiceImpl implements WordService {
                 .collect(Collectors.toList());
 
         return PageResult.success(voList, result.getTotal(), result.getCurrent(), result.getSize());
+    }
+
+    private void applySort(LambdaQueryWrapper<Word> wrapper, String sortField, String sortOrder) {
+        boolean isAsc = !"desc".equalsIgnoreCase(sortOrder);
+
+        if (!StringUtils.hasText(sortField)) {
+            wrapper.orderByAsc(Word::getWord);
+            return;
+        }
+
+        switch (sortField) {
+            case "word":
+                wrapper.orderBy(true, isAsc, Word::getWord);
+                break;
+            case "translation":
+                wrapper.orderBy(true, isAsc, Word::getTranslation);
+                break;
+            case "difficultyLevel":
+                wrapper.orderBy(true, isAsc, Word::getDifficultyLevel);
+                break;
+            case "partOfSpeech":
+                wrapper.orderBy(true, isAsc, Word::getPartOfSpeech);
+                break;
+            case "wordCategory":
+                wrapper.orderBy(true, isAsc, Word::getWordCategory);
+                break;
+            case "createdAt":
+                wrapper.orderBy(true, isAsc, Word::getCreatedAt);
+                break;
+            case "updatedAt":
+                wrapper.orderBy(true, isAsc, Word::getUpdatedAt);
+                break;
+            default:
+                wrapper.orderByAsc(Word::getWord);
+        }
     }
 
     @Override
@@ -79,28 +133,6 @@ public class WordServiceImpl implements WordService {
             throw new BusinessException(404, "Word not found");
         }
         log.info("Word deleted: id={}", id);
-    }
-
-    @Override
-    public PageResult<List<WordVO>> search(String keyword, int pageNum, int pageSize) {
-        if (!StringUtils.hasText(keyword)) {
-            return page(pageNum, pageSize);
-        }
-
-        Page<Word> page = new Page<>(pageNum, pageSize);
-        LambdaQueryWrapper<Word> wrapper = new LambdaQueryWrapper<>();
-        wrapper.like(Word::getWord, keyword)
-                .or()
-                .like(Word::getTranslation, keyword)
-                .orderByAsc(Word::getWord);
-
-        Page<Word> result = wordMapper.selectPage(page, wrapper);
-
-        List<WordVO> voList = result.getRecords().stream()
-                .map(this::toWordVO)
-                .collect(Collectors.toList());
-
-        return PageResult.success(voList, result.getTotal(), result.getCurrent(), result.getSize());
     }
 
     private WordVO toWordVO(Word word) {

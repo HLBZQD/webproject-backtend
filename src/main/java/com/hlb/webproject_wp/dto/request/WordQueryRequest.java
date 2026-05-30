@@ -1,0 +1,39 @@
+package com.hlb.webproject_wp.dto.request;
+
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+
+@Data
+public class WordQueryRequest {
+
+    @Size(max = 100, message = "Keyword too long")
+    private String keyword;
+
+    @Min(value = 1, message = "Difficulty must be 1-5")
+    @Max(value = 5, message = "Difficulty must be 1-5")
+    private Integer difficultyLevel;
+
+    @Size(max = 50, message = "Part of speech too long")
+    private String partOfSpeech;
+
+    @Size(max = 100, message = "Word category too long")
+    private String wordCategory;
+
+    /** Sort field: word, translation, difficultyLevel, partOfSpeech, wordCategory, createdAt, updatedAt */
+    @Size(max = 30, message = "Sort field too long")
+    private String sortField;
+
+    /** Sort direction: asc or desc */
+    @Pattern(regexp = "^(asc|desc)$", message = "Sort order must be 'asc' or 'desc'")
+    private String sortOrder;
+
+    @Min(value = 1, message = "Page must be >= 1")
+    private int page = 1;
+
+    @Min(value = 1, message = "Size must be >= 1")
+    @Max(value = 100, message = "Size must be <= 100")
+    private int size = 10;
+}

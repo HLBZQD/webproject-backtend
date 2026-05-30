@@ -171,7 +171,7 @@ class WordControllerTest {
         insertWordDirectly("banana", "香蕉");
         insertWordDirectly("application", "申请；应用");
 
-        mockMvc.perform(get("/api/words/search")
+        mockMvc.perform(get("/api/words")
                         .param("keyword", "app")
                         .param("page", "1")
                         .param("size", "10"))
@@ -193,7 +193,7 @@ class WordControllerTest {
     @Test
     @Order(9)
     void searchWordsNoMatch() throws Exception {
-        mockMvc.perform(get("/api/words/search")
+        mockMvc.perform(get("/api/words")
                         .param("keyword", "xyznonexistent999")
                         .param("page", "1")
                         .param("size", "10"))
