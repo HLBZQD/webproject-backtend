@@ -1,0 +1,57 @@
+# ============================================================
+# WordType Spring Boot Configuration
+# 配置说明：
+#   - server.port: 服务端口（默认 8080）
+#   - spring.datasource: MySQL 数据库连接
+#   - mybatis-plus: MyBatis-Plus ORM 配置
+#   - jwt: JWT Token 签名密钥和有效期
+# 注意：生产环境应通过环境变量覆盖密码和密钥
+# ============================================================
+
+# 服务器配置
+server:
+  port: 8080
+
+spring:
+  application:
+    name: WordType  # 应用名称
+
+  # ======= MySQL 数据库连接 =======
+  datasource:
+    # JDBC URL：127.0.0.1 避免 IPv6 解析问题
+    # 参数说明：
+    #   useUnicode=true         — 启用 Unicode 编码
+    #   characterEncoding=utf-8 — 字符集 UTF-8
+    #   serverTimezone=Asia/Shanghai — 时区（东八区）
+    #   allowPublicKeyRetrieval=true — 允许客户端获取公钥（MySQL 8+ 需要）
+    #   useSSL=false            — 开发环境关闭 SSL
+    url: jdbc:mysql://127.0.0.1:3306/wordtype?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
+    username: root
+    password: derpy
+    driver-class-name: com.mysql.cj.jdbc.Driver  # MySQL JDBC 驱动
+
+  # JSON 序列化配置
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss  # 日期格式
+    time-zone: Asia/Shanghai          # 时区
+
+# ======= MyBatis-Plus 配置 =======
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml  # XML 映射文件路径
+  type-aliases-package: com.hlb.webproject_wp.entity  # 实体类包路径
+  global-config:
+    db-config:
+      id-type: auto                # 主键自增策略
+      logic-delete-field: deleted   # 逻辑删除字段名
+      logic-delete-value: 1         # 已删除值
+      logic-not-delete-value: 0     # 未删除值
+  configuration:
+    map-underscore-to-camel-case: true  # 下划线→驼峰自动映射
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # SQL 日志（生产环境建议删除）
+
+# ======= JWT 配置 =======
+jwt:
+  # 签名密钥：至少 256 位，生产环境必须通过环境变量修改
+  secret: WordTypeSecretKeyForJWT2026MustBeLongEnoughToPass256BitRequirement
+  # Token 有效期：86400000ms = 24 小时
+  expiration: 86400000

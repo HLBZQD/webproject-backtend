@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hlb.webproject_wp.mapper.PracticeRecordMapper">
+
+    <resultMap id="PracticeRecordWithWordMap" type="com.hlb.webproject_wp.entity.PracticeRecord">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="word_id" property="wordId"/>
+        <result column="typing_speed_wpm" property="typingSpeedWpm"/>
+        <result column="accuracy" property="accuracy"/>
+        <result column="duration_seconds" property="durationSeconds"/>
+        <result column="mistakes_count" property="mistakesCount"/>
+        <result column="completed" property="completed"/>
+        <result column="practiced_at" property="practicedAt"/>
+        <result column="word_text" property="wordText"/>
+        <result column="translation" property="translation"/>
+    </resultMap>
+
+    <select id="selectPageWithWord" resultMap="PracticeRecordWithWordMap">
+        SELECT pr.*, w.word AS word_text, w.translation
+        FROM tb_practice_record pr
+        LEFT JOIN tb_word w ON pr.word_id = w.id
+        WHERE pr.user_id = #{userId}
+        ORDER BY pr.practiced_at DESC
+    </select>
+
+    <select id="selectStats" resultType="com.hlb.webproject_wp.mapper.PracticeRecordMapper$PracticeStats">
+        SELECT
+            COUNT(*) AS totalPractices,
+            COALESCE(AVG(typing_speed_wpm), 0) AS avgSpeedWpm,
+            COALESCE(AVG(accuracy), 0) AS avgAccuracy,
+            COALESCE(SUM(duration_seconds), 0) AS totalDurationSeconds
+        FROM tb_practice_record
+        WHERE user_id = #{userId}
+    </select>
+
+</mapper>
