@@ -36,6 +36,14 @@ public class WordServiceImpl implements WordService {
                  .like(Word::getTranslation, request.getKeyword()));
         }
 
+        if (StringUtils.hasText(request.getPrefix())) {
+            wrapper.likeRight(Word::getWord, request.getPrefix());
+        }
+
+        if (StringUtils.hasText(request.getSuffix())) {
+            wrapper.likeLeft(Word::getWord, request.getSuffix());
+        }
+
         if (request.getDifficultyLevel() != null) {
             wrapper.eq(Word::getDifficultyLevel, request.getDifficultyLevel());
         }

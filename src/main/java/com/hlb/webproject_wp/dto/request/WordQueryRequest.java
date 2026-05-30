@@ -12,6 +12,12 @@ public class WordQueryRequest {
     @Size(max = 100, message = "Keyword too long")
     private String keyword;
 
+    @Size(max = 100, message = "Prefix too long")
+    private String prefix;
+
+    @Size(max = 100, message = "Suffix too long")
+    private String suffix;
+
     @Min(value = 1, message = "Difficulty must be 1-5")
     @Max(value = 5, message = "Difficulty must be 1-5")
     private Integer difficultyLevel;
