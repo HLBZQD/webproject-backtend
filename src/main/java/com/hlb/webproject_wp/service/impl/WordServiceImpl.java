@@ -1,7 +1,6 @@
 package com.hlb.webproject_wp.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hlb.webproject_wp.common.BusinessException;
 import com.hlb.webproject_wp.common.PageResult;
 import com.hlb.webproject_wp.dto.request.WordQueryRequest;
@@ -28,7 +27,6 @@ public class WordServiceImpl implements WordService {
 
     @Override
     public PageResult<List<WordVO>> query(WordQueryRequest request) {
-        Page<Word> page = new Page<>(request.getPage(), request.getSize());
         LambdaQueryWrapper<Word> wrapper = new LambdaQueryWrapper<>();
 
         if (StringUtils.hasText(request.getKeyword())) {
@@ -50,13 +48,22 @@ public class WordServiceImpl implements WordService {
 
         applySort(wrapper, request.getSortField(), request.getSortOrder());
 
-        Page<Word> result = wordMapper.selectPage(page, wrapper);
+        // Manual pagination — PaginationInnerInterceptor is not available in
+        // MyBatis-Plus 3.5.16 + Spring Boot 4 starter, so we handle it here.
+        long total = wordMapper.selectCount(wrapper);
+        int pageNum = request.getPage();
+        int pageSize = request.getSize();
+        long offset = (long) (pageNum - 1) * pageSize;
 
-        List<WordVO> voList = result.getRecords().stream()
+        // Clone wrapper for the data query with LIMIT appended
+        wrapper.last("LIMIT " + offset + ", " + pageSize);
+        List<Word> records = wordMapper.selectList(wrapper);
+
+        List<WordVO> voList = records.stream()
                 .map(this::toWordVO)
                 .collect(Collectors.toList());
 
-        return PageResult.success(voList, result.getTotal(), result.getCurrent(), result.getSize());
+        return PageResult.success(voList, total, pageNum, pageSize);
     }
 
     private void applySort(LambdaQueryWrapper<Word> wrapper, String sortField, String sortOrder) {
