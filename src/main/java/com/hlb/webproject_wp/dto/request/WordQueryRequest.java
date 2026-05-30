@@ -18,6 +18,9 @@ public class WordQueryRequest {
     @Size(max = 100, message = "Suffix too long")
     private String suffix;
 
+    private Long idFrom;
+    private Long idTo;
+
     @Min(value = 1, message = "Difficulty must be 1-5")
     @Max(value = 5, message = "Difficulty must be 1-5")
     private Integer difficultyLevel;

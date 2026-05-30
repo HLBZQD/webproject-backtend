@@ -51,6 +51,13 @@ public class WordServiceImpl implements WordService {
             wrapper.eq(Word::getWordCategory, request.getWordCategory());
         }
 
+        if (request.getIdFrom() != null) {
+            wrapper.ge(Word::getId, request.getIdFrom());
+        }
+        if (request.getIdTo() != null) {
+            wrapper.le(Word::getId, request.getIdTo());
+        }
+
         applySort(wrapper, request.getSortField(), request.getSortOrder());
 
         // Manual pagination — PaginationInnerInterceptor is not available in
