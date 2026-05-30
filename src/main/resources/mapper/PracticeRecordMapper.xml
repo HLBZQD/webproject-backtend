@@ -22,6 +22,13 @@
         LEFT JOIN tb_word w ON pr.word_id = w.id
         WHERE pr.user_id = #{userId}
         ORDER BY pr.practiced_at DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <select id="countByUserId" resultType="long">
+        SELECT COUNT(*)
+        FROM tb_practice_record pr
+        WHERE pr.user_id = #{userId}
     </select>
 
     <select id="selectStats" resultType="com.hlb.webproject_wp.mapper.PracticeRecordMapper$PracticeStats">

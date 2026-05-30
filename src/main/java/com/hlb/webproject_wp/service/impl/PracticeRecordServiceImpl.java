@@ -1,7 +1,6 @@
 package com.hlb.webproject_wp.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hlb.webproject_wp.common.BusinessException;
 import com.hlb.webproject_wp.common.PageResult;
 import com.hlb.webproject_wp.dto.request.PracticeRecordRequest;
@@ -71,21 +70,22 @@ public class PracticeRecordServiceImpl implements PracticeRecordService {
 
     @Override
     public PageResult<List<PracticeRecordVO>> getUserRecords(Long userId, int pageNum, int pageSize) {
-        Page<PracticeRecord> page = new Page<>(pageNum, pageSize);
-        Page<PracticeRecord> result = practiceRecordMapper.selectPageWithWord(page, userId);
+        long total = practiceRecordMapper.countByUserId(userId);
+        long offset = (long) (pageNum - 1) * pageSize;
 
-        List<PracticeRecordVO> voList = result.getRecords().stream()
+        List<PracticeRecord> records = practiceRecordMapper.selectPageWithWord(userId, offset, pageSize);
+
+        List<PracticeRecordVO> voList = records.stream()
                 .map(record -> {
                     PracticeRecordVO vo = new PracticeRecordVO();
                     BeanUtils.copyProperties(record, vo);
-                    // wordText and translation are filled by the XML join query
                     vo.setWordText(record.getWordText());
                     vo.setTranslation(record.getTranslation());
                     return vo;
                 })
                 .collect(Collectors.toList());
 
-        return PageResult.success(voList, result.getTotal(), result.getCurrent(), result.getSize());
+        return PageResult.success(voList, total, pageNum, pageSize);
     }
 
     @Override

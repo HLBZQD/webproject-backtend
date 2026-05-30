@@ -1,17 +1,21 @@
 package com.hlb.webproject_wp.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hlb.webproject_wp.entity.PracticeRecord;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Mapper
 public interface PracticeRecordMapper extends BaseMapper<PracticeRecord> {
 
-    Page<PracticeRecord> selectPageWithWord(Page<PracticeRecord> page, @Param("userId") Long userId);
+    List<PracticeRecord> selectPageWithWord(@Param("userId") Long userId,
+                                            @Param("offset") long offset,
+                                            @Param("limit") int limit);
+
+    long countByUserId(@Param("userId") Long userId);
 
     PracticeStats selectStats(@Param("userId") Long userId);
 
