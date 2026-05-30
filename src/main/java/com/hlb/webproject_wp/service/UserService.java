@@ -1,10 +1,15 @@
 package com.hlb.webproject_wp.service;
 
+import com.hlb.webproject_wp.common.PageResult;
+import com.hlb.webproject_wp.dto.request.CreateUserDTO;
 import com.hlb.webproject_wp.dto.request.LoginRequest;
 import com.hlb.webproject_wp.dto.request.RegisterRequest;
+import com.hlb.webproject_wp.dto.request.UpdateUserDTO;
+import com.hlb.webproject_wp.dto.response.AdminUserVO;
 import com.hlb.webproject_wp.dto.response.UserVO;
 import com.hlb.webproject_wp.entity.User;
 
+import java.util.List;
 import java.util.Map;
 
 public interface UserService {
@@ -14,4 +19,10 @@ public interface UserService {
     Map<String, Object> login(LoginRequest request);
 
     User findByUsername(String username);
+
+    // ── Admin user management ──
+    PageResult<List<AdminUserVO>> listUsers(int page, int size);
+    AdminUserVO createUser(CreateUserDTO dto);
+    AdminUserVO updateUser(Long id, UpdateUserDTO dto);
+    void deleteUser(Long id);
 }
