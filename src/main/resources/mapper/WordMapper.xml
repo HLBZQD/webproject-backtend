@@ -8,7 +8,7 @@
         <result column="translation" property="translation"/>
         <result column="phonetic" property="phonetic"/>
         <result column="difficulty_level" property="difficultyLevel"/>
-        <result column="part_of_speech" property="partOfSpeech"/>
+        <result column="sound" property="sound"/>
         <result column="example_sentence" property="exampleSentence"/>
         <result column="word_category" property="wordCategory"/>
         <result column="created_at" property="createdAt"/>

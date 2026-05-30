@@ -19,7 +19,7 @@ public class Word {
 
     private Integer difficultyLevel;
 
-    private String partOfSpeech;
+    private String sound;
 
     private String exampleSentence;
 

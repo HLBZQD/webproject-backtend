@@ -39,9 +39,6 @@ public class WordServiceImpl implements WordService {
         if (request.getDifficultyLevel() != null) {
             wrapper.eq(Word::getDifficultyLevel, request.getDifficultyLevel());
         }
-        if (StringUtils.hasText(request.getPartOfSpeech())) {
-            wrapper.eq(Word::getPartOfSpeech, request.getPartOfSpeech());
-        }
         if (StringUtils.hasText(request.getWordCategory())) {
             wrapper.eq(Word::getWordCategory, request.getWordCategory());
         }
@@ -84,8 +81,8 @@ public class WordServiceImpl implements WordService {
             case "difficultyLevel":
                 wrapper.orderBy(true, isAsc, Word::getDifficultyLevel);
                 break;
-            case "partOfSpeech":
-                wrapper.orderBy(true, isAsc, Word::getPartOfSpeech);
+            case "sound":
+                wrapper.orderBy(true, isAsc, Word::getSound);
                 break;
             case "wordCategory":
                 wrapper.orderBy(true, isAsc, Word::getWordCategory);

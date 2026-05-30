@@ -10,7 +10,7 @@ public class WordVO {
     private String translation;
     private String phonetic;
     private Integer difficultyLevel;
-    private String partOfSpeech;
+    private String sound;
     private String exampleSentence;
     private String wordCategory;
     private LocalDateTime createdAt;

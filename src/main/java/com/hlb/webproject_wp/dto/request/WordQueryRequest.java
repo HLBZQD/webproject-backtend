@@ -16,13 +16,10 @@ public class WordQueryRequest {
     @Max(value = 5, message = "Difficulty must be 1-5")
     private Integer difficultyLevel;
 
-    @Size(max = 50, message = "Part of speech too long")
-    private String partOfSpeech;
-
     @Size(max = 100, message = "Word category too long")
     private String wordCategory;
 
-    /** Sort field: word, translation, difficultyLevel, partOfSpeech, wordCategory, createdAt, updatedAt */
+    /** Sort field: word, translation, difficultyLevel, sound, wordCategory, createdAt, updatedAt */
     @Size(max = 30, message = "Sort field too long")
     private String sortField;
 

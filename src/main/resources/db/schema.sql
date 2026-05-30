@@ -31,7 +31,7 @@ CREATE TABLE tb_word (
     translation VARCHAR(500) NOT NULL,
     phonetic VARCHAR(200),
     difficulty_level TINYINT NOT NULL DEFAULT 1 COMMENT '1-5, easy to hard',
-    part_of_speech VARCHAR(50),
+    sound VARCHAR(500) NOT NULL,
     example_sentence VARCHAR(1000),
     word_category VARCHAR(100),
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

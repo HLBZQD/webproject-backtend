@@ -29,7 +29,5 @@ public class WordSaveRequest {
 
     @Size(max = 1000, message = "Example sentence too long")
     private String exampleSentence;
-
-    @Size(max = 100, message = "Word category too long")
     private String wordCategory;
 }
