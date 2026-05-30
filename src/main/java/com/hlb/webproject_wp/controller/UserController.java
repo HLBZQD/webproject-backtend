@@ -30,8 +30,13 @@ public class UserController {
     @GetMapping
     public Result<PageResult<List<AdminUserVO>>> listUsers(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        PageResult<List<AdminUserVO>> result = userService.listUsers(page, size);
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String role,
+            @RequestParam(required = false) Boolean showDeleted,
+            @RequestParam(required = false) String sortField,
+            @RequestParam(required = false) String sortOrder) {
+        PageResult<List<AdminUserVO>> result = userService.listUsers(page, size, keyword, role, showDeleted, sortField, sortOrder);
         return Result.success(result);
     }
 

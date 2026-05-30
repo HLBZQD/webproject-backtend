@@ -19,6 +19,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import org.springframework.util.StringUtils;
+
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,12 +89,41 @@ public class UserServiceImpl implements UserService {
     // ── Admin user management ──
 
     @Override
-    public PageResult<List<AdminUserVO>> listUsers(int page, int size) {
-        long offset = (long) (page - 1) * size;
-
+    public PageResult<List<AdminUserVO>> listUsers(int page, int size, String keyword, String role, Boolean showDeleted, String sortField, String sortOrder) {
         List<User> all = userMapper.selectAllUsers();
-        long total = all.size();
 
+        // Filter: keyword search (username, email, nickname)
+        if (StringUtils.hasText(keyword)) {
+            String kw = keyword.toLowerCase();
+            all = all.stream()
+                .filter(u -> (u.getUsername() != null && u.getUsername().toLowerCase().contains(kw))
+                          || (u.getEmail() != null && u.getEmail().toLowerCase().contains(kw))
+                          || (u.getNickname() != null && u.getNickname().toLowerCase().contains(kw)))
+                .collect(Collectors.toList());
+        }
+
+        // Filter: role
+        if (StringUtils.hasText(role)) {
+            all = all.stream()
+                .filter(u -> role.equals(u.getRole()))
+                .collect(Collectors.toList());
+        }
+
+        // Filter: show deleted
+        if (showDeleted == null || !showDeleted) {
+            all = all.stream()
+                .filter(u -> u.getDeleted() == null || u.getDeleted() == 0)
+                .collect(Collectors.toList());
+        }
+
+        // Sort
+        boolean isAsc = !"desc".equalsIgnoreCase(sortOrder);
+        Comparator<User> comparator = getUserComparator(sortField, isAsc);
+        all.sort(comparator);
+
+        // Paginate
+        long total = all.size();
+        long offset = (long) (page - 1) * size;
         int from = (int) Math.min(offset, all.size());
         int to = (int) Math.min(offset + size, all.size());
         List<User> users = all.subList(from, to);
@@ -101,6 +133,22 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
 
         return PageResult.success(voList, total, page, size);
+    }
+
+    private Comparator<User> getUserComparator(String sortField, boolean isAsc) {
+        Comparator<User> cmp;
+        if ("username".equals(sortField)) {
+            cmp = Comparator.comparing(User::getUsername, Comparator.nullsLast(String::compareToIgnoreCase));
+        } else if ("email".equals(sortField)) {
+            cmp = Comparator.comparing(User::getEmail, Comparator.nullsLast(String::compareToIgnoreCase));
+        } else if ("role".equals(sortField)) {
+            cmp = Comparator.comparing(User::getRole, Comparator.nullsLast(String::compareToIgnoreCase));
+        } else if ("createdAt".equals(sortField)) {
+            cmp = Comparator.comparing(User::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder()));
+        } else {
+            cmp = Comparator.comparing(User::getId);
+        }
+        return isAsc ? cmp : cmp.reversed();
     }
 
     @Override
