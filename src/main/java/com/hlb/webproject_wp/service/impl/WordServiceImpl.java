@@ -87,6 +87,9 @@ public class WordServiceImpl implements WordService {
         }
 
         switch (sortField) {
+            case "id":
+                wrapper.orderBy(true, isAsc, Word::getId);
+                break;
             case "word":
                 wrapper.orderBy(true, isAsc, Word::getWord);
                 break;

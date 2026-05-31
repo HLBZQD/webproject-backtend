@@ -202,6 +202,16 @@ public class UserServiceImpl implements UserService {
         log.info("Admin restored user: id={}", id);
     }
 
+    @Override
+    public void hardDeleteUser(Long id) {
+        User user = userMapper.selectAllUsers().stream()
+                .filter(u -> u.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new BusinessException(404, "User not found"));
+        userMapper.hardDeleteById(id);
+        log.info("Admin hard deleted user: id={}, username={}", id, user.getUsername());
+    }
+
     private AdminUserVO toAdminUserVO(User user) {
         AdminUserVO vo = new AdminUserVO();
         BeanUtils.copyProperties(user, vo);

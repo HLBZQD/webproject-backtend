@@ -26,4 +26,5 @@ public interface UserService {
     AdminUserVO updateUser(Long id, UpdateUserDTO dto);
     void deleteUser(Long id);
     void restoreUser(Long id);
+    void hardDeleteUser(Long id);
 }

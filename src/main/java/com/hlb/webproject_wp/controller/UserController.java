@@ -63,4 +63,10 @@ public class UserController {
         userService.restoreUser(id);
         return Result.success();
     }
+
+    @DeleteMapping("/{id}/hard")
+    public Result<Void> hardDeleteUser(@PathVariable Long id) {
+        userService.hardDeleteUser(id);
+        return Result.success();
+    }
 }
