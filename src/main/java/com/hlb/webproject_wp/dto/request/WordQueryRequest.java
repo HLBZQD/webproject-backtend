@@ -40,6 +40,5 @@ public class WordQueryRequest {
     private int page = 1;
 
     @Min(value = 1, message = "Size must be >= 1")
-    @Max(value = 500, message = "Size must be <= 500")
     private int size = 10;
 }
